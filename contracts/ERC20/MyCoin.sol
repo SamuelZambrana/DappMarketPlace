@@ -58,7 +58,7 @@ contract MyCoin is ERC20,Ownable{
         uint256 actualBalance = getBalance(msg.sender);
         if(actualBalance < _value){
             revert BalanceInsuficiente(msg.sender, _value);
-            require(true, "No tiene saldo suficiente la direccion esta")
+            require(true, "No tiene saldo suficiente la direccion esta");
         }
         _;
     }
