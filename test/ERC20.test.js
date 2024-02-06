@@ -39,10 +39,19 @@ describe("ERC20 Test Suite", function(){
 
     it("Check Mint", async function(){
         //compruebe el saldo inicial
+        const balance = await deployedERC20Contract.getBalance(signer.address)
+        expect(balance).to.equal(2000)
+
+        const balance2 = await deployedERC20Contract.getBalance(otherAccount.address)
+        expect(balance2).to.equal(3000)
 
         //haga el minteo
-        
+        const mint = await deployedERC20Contract.mintNewTokens(3000,otherAccount.address)
+
         //compruebe el saldo final
+        const balanceFinal2 = await deployedERC20Contract.getBalance(otherAccount.address)
+        expect(balanceFinal2).to.equal(6000)
+
     })
 
 
