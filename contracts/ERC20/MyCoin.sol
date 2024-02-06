@@ -93,5 +93,14 @@ contract MyCoin is ERC20,Ownable{
         decimal = _decimal;
         return decimal;
     }
+
+    /**
+     * Mintea nuevos tokens que va a recibir una direccion 
+     * @param _amount cantidad de tokens que se van a mintear
+     * @param _receiver address de quien va a recibir los tokens
+     */
+    function mintNewTokens(uint256 _amount, address _receiver) public onlyOwner{
+        
+    }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }
