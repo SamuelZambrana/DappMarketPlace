@@ -25,8 +25,6 @@ contract MyCoin is ERC20,Ownable{
     uint8 public decimal;
     bool public status = true;      
 
-    mapping(address => bool) blackList;
-
     /**
      * -----------------------------------------------------------------------------------------------------
      *                                      CONSTRUCTOR
@@ -69,11 +67,6 @@ contract MyCoin is ERC20,Ownable{
         _;
     }
 
-    modifier blackListed(address _wallet) {
-        require(!blackList[_wallet], "This wallet is already blacklisted");
-        _;
-    }
-
     modifier allowTransfers() {
         require(status, "Transfers are not allowed");
         _;
@@ -96,7 +89,7 @@ contract MyCoin is ERC20,Ownable{
         return balance;
     }
 
-    function doTransfer(address _to, uint256 _value) public blackListed(msg.sender) returns(bool){
+    function doTransfer(address _to, uint256 _value) public returns(bool){
         if(status == false){
             revert TransfersOFF(status);
         }
@@ -121,14 +114,6 @@ contract MyCoin is ERC20,Ownable{
             status = true;
         }
         return(status);
-    }
-
-    function frozeWallet(address _wallet) public view onlyOwner() {
-        if(blackList[_wallet] == true){
-            revert AlreadyInBlacklist(_wallet);
-        }else{
-            blackList[_wallet] == true;
-        }
     }
 
     /**
