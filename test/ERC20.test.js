@@ -72,4 +72,28 @@ describe("ERC20 Test Suite", function(){
     })
 
 
+    it("Check switcherAccount", async function(){
+        //comprobar el estado inicial signer
+        const status = await deployedERC20Contract.blacklist(signer.address)
+        expect(status).to.be.false
+        //cambiar el estado del signer
+        await deployedERC20Contract.switcherAccount(signer.address)
+        //comprobar el estado final signer
+        const finalStatus = await deployedERC20Contract.blacklist(signer.address)
+        expect(finalStatus).to.be.true
+    })
+
+    it("Check Transfers are not allowed when sender is blacklisted", async function(){
+
+        //cambiar el estado del otherAccount
+        await deployedERC20Contract.switcher()
+        //comprobar el estado final del otherAccount
+        const finalStatus = await deployedERC20Contract.status()
+        expect(finalStatus).to.be.true
+        //comprobar que la transferencia falla porque el signer está en la blacklist
+        await expect(
+            deployedERC20Contract.doTransfer(otherAccount.address,100)
+        ).to.be.revertedWith('Account is not allowed')
+    })
+
 }) 
