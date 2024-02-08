@@ -21,7 +21,9 @@ contract MyCoin is ERC20,Ownable{
      * -----------------------------------------------------------------------------------------------------
      */
 
+    //se genera un getter ya que es public
     uint8 public decimal;
+    bool public status = true;      
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -47,6 +49,8 @@ contract MyCoin is ERC20,Ownable{
      */
 
     error BalanceInsuficiente(address sender, uint256 value);
+    error TransfersOFF(bool status);
+    error AlreadyInBlacklist(address _wallet);
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -60,6 +64,11 @@ contract MyCoin is ERC20,Ownable{
             revert BalanceInsuficiente(msg.sender, _value);
             require(true, "No tiene saldo suficiente la direccion esta");
         }
+        _;
+    }
+
+    modifier allowTransfers() {
+        require(status, "Transfers are not allowed");
         _;
     }
 
@@ -81,6 +90,9 @@ contract MyCoin is ERC20,Ownable{
     }
 
     function doTransfer(address _to, uint256 _value) public returns(bool){
+        if(status == false){
+            revert TransfersOFF(status);
+        }
         bool result = transfer(_to, _value);
         return result;
     }
@@ -92,6 +104,25 @@ contract MyCoin is ERC20,Ownable{
     function setDecimals(uint8 _decimal) public onlyOwner returns(uint8){
         decimal = _decimal;
         return decimal;
+    }
+
+    //function to swap from "ON" to "OFF"
+    function switcher() public onlyOwner returns (bool){
+        if(status){
+            status = false;
+        }else{
+            status = true;
+        }
+        return(status);
+    }
+
+    /**
+     * Mintea nuevos tokens que va a recibir una direccion 
+     * @param _amount cantidad de tokens que se van a mintear
+     * @param _receiver address de quien va a recibir los tokens
+     */
+    function mintNewTokens(uint256 _amount, address _receiver) public onlyOwner{
+        _mint(_receiver,_amount);
     }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 }
