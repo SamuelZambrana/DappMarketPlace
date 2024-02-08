@@ -54,5 +54,22 @@ describe("ERC20 Test Suite", function(){
 
     })
 
+    it("Check Switcher", async function(){
+        //comprobar el estado inicial
+        const status = await deployedERC20Contract.status()
+        expect(status).to.be.true
+        //cambiar el estado
+        const response = await deployedERC20Contract.switcher()
+        //comprobar el estado final
+        const finalStatus = await deployedERC20Contract.status()
+        expect(finalStatus).to.be.false
+    })
+
+    it("Check Transfers are not allowed", async function(){
+        await expect(
+            deployedERC20Contract.doTransfer(otherAccount.address,100)
+        ).to.be.revertedWith('Transfers are not allowed')
+    })
+
 
 }) 

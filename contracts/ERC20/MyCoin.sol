@@ -23,7 +23,11 @@ contract MyCoin is ERC20,Ownable{
 
     //se genera un getter ya que es public
     uint8 public decimal;
-    bool public status = true;      
+
+    bool public status = true;  
+
+    //true esta desactivado, false esta activado
+    mapping(address => bool) public blacklist;    
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -49,8 +53,6 @@ contract MyCoin is ERC20,Ownable{
      */
 
     error BalanceInsuficiente(address sender, uint256 value);
-    error TransfersOFF(bool status);
-    error AlreadyInBlacklist(address _wallet);
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -72,6 +74,11 @@ contract MyCoin is ERC20,Ownable{
         _;
     }
 
+    modifier allowTransfersAccount(address _account){
+        require(!blacklist[_account], "Account is not allowed");
+        _;
+    }
+
     /**
      * -----------------------------------------------------------------------------------------------------
      *                                      EVENTS
@@ -89,10 +96,7 @@ contract MyCoin is ERC20,Ownable{
         return balance;
     }
 
-    function doTransfer(address _to, uint256 _value) public returns(bool){
-        if(status == false){
-            revert TransfersOFF(status);
-        }
+    function doTransfer(address _to, uint256 _value) public allowTransfers allowTransfersAccount(msg.sender) returns(bool){
         bool result = transfer(_to, _value);
         return result;
     }
@@ -113,7 +117,16 @@ contract MyCoin is ERC20,Ownable{
         }else{
             status = true;
         }
-        return(status);
+        return status;
+    }
+
+    function switcherAccount(address _account) public onlyOwner returns(bool){
+        if(blacklist[_account]){
+            blacklist[_account] = false;
+        }else{
+            blacklist[_account] = true;
+        }
+        return blacklist[_account];
     }
 
     /**
