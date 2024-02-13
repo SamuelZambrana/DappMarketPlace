@@ -22,11 +22,6 @@ contract MyNFTCollection is ERC721, Ownable{
 
     uint256 public tokenIdCounter = 0;
 
-    mapping(uint256 => uint8) public tokenTypeMap;
-
-    string public baseTokenURI;
-
-    
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -34,9 +29,7 @@ contract MyNFTCollection is ERC721, Ownable{
      * -----------------------------------------------------------------------------------------------------
      */
 
-    constructor(string memory _name, string memory _symbol, string memory _baseTokenURI)ERC721(_name, _symbol){
-        baseTokenURI = _baseTokenURI;
-    }
+    constructor(string memory _name, string memory _symbol)ERC721(_name, _symbol){}
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -62,8 +55,6 @@ contract MyNFTCollection is ERC721, Ownable{
      * -----------------------------------------------------------------------------------------------------
      */
 
-    event TokenMinted(address indexed minter, uint256 tokenId);
-
     /**
      * -----------------------------------------------------------------------------------------------------
      *                                      FUNCIONES
@@ -75,11 +66,9 @@ contract MyNFTCollection is ERC721, Ownable{
         return tokenIdCounter;
     }
 
-    function mintNewToken(uint8 _tokenType) public returns(uint256){
+    function mintNewToken() public returns(uint256){
         uint256 tokenId = incrementCounter(); 
         _mint(msg.sender, tokenId);
-        tokenTypeMap[tokenId] = _tokenType;
-        emit TokenMinted(msg.sender, tokenId);
         return tokenId;
     }
 
