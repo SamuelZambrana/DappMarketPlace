@@ -116,7 +116,7 @@ contract MyMarketPlace is Ownable{
 
     //IMPORTANE
     //Para la resolucion de la practica es necesario utilizar la funcion transferFrom tanto del ERC20 como del ERC721.
-    //Porque quien va a realizar las llamas de transferencia (transferFrom) va a ser el contrato del MarketPlace
+    //Porque quien va a realizar las llamadas de transferencia (transferFrom) va a ser el contrato del MarketPlace
     
     function createSale(uint256 _tokenId, uint256 _price) public{
         //Ejemplo de uso de los contratos externos
