@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 //Imports
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {IMyCoin} from "../ERC20/IMyCoin.sol";
+import {IMyNFTCollection} from "../ERC721/IMyNFTCollection.sol";
 
 /**
  * @title 
@@ -22,9 +22,9 @@ contract MyMarketPlace is Ownable{
      */
 
     //Referencia al contrato MyCoin
-    IERC20 MyCoinContract;
+    IMyCoin MyCoinContract;
     //Referencia al contrato MyNFTCollection
-    IERC721 MyNFTCollectionContract;
+    IMyNFTCollection MyNFTCollectionContract;
 
     //Contador para los id de las Sales
     uint256 public saleIdCounter = 0;
@@ -70,8 +70,8 @@ contract MyMarketPlace is Ownable{
      * @param _ERC721Address address del contrato ERC721
      */
     constructor(address _ERC20Address, address _ERC721Address){
-        MyCoinContract = IERC20(_ERC20Address);
-        MyNFTCollectionContract = IERC721(_ERC721Address);
+        MyCoinContract = IMyCoin(_ERC20Address);
+        MyNFTCollectionContract = IMyNFTCollection(_ERC721Address);
     }
 
     /**
@@ -114,9 +114,13 @@ contract MyMarketPlace is Ownable{
         return saleIdCounter;
     }
 
+    //IMPORTANE
+    //Para la resolucion de la practica es necesario utilizar la funcion transferFrom tanto del ERC20 como del ERC721.
+    //Porque quien va a realizar las llamas de transferencia (transferFrom) va a ser el contrato del MarketPlace
     
     function createSale(uint256 _tokenId, uint256 _price) public{
-        
+        //Ejemplo de uso de los contratos externos
+        // MyNFTCollection.ownerOfToken(_tokenId)
     }
 
     function buySale(uint256 _saleId) public{
