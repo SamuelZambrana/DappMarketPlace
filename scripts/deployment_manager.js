@@ -5,8 +5,10 @@ const MarketPlaceDeployScript = require("./MarketPlace.deploy")
 
 const main = async () => {
     await ERC20DeployScript.deploy()
+    let ERC20ContractAddress = await ERC20DeployScript.getContractAddress()
     await ERC721DeployScript.deploy()
-    await MarketPlaceDeployScript.deploy()
+    let ERC721ContractAddress = await ERC721DeployScript.getContractAddress()
+    await MarketPlaceDeployScript.deploy(ERC20ContractAddress, ERC721ContractAddress)
 }
 
 main()
