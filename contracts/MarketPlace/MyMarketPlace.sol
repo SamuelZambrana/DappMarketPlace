@@ -42,6 +42,8 @@ contract MyMarketPlace is Ownable{
 
     //Contiene toda la informacion de una venta
     struct Sale{
+        //Id de la venta
+        uint256 saleId;
         //Propietario del token y de la venta
         address owner;
         //Id del token ERC721 (NFT)
@@ -113,26 +115,83 @@ contract MyMarketPlace is Ownable{
         saleIdCounter++;
         return saleIdCounter;
     }
-
-    //IMPORTANE
-    //Para la resolucion de la practica es necesario utilizar la funcion transferFrom tanto del ERC20 como del ERC721.
-    //Porque quien va a realizar las llamadas de transferencia (transferFrom) va a ser el contrato del MarketPlace
-    
-    function createSale(uint256 _tokenId, uint256 _price) public{
-        //Ejemplo de uso de los contratos externos
-        // MyNFTCollection.ownerOfToken(_tokenId)
+    /**
+     * Creamos una venta de un tokenID y le ponemos un precio.
+     * Solo puede crear la venta el dueño del tokenID
+     * Lo guardamos ese tokenID en el mapping y creamos una nueva instancia de la estructura de sale
+     * para guardar los datos de la nueva venta
+     * Hacemos la transferencia del tokenID desde la direccion del dueño del token a la direcion de este 
+     * contrato MyMarketPlace
+     */
+   function createSale(uint256 _tokenId, uint256 _price) public onlyOwner(){
+        //Comprueba que el llamante sea el dueño del token
+        require(IMyNFTCollection(msg.sender).ownerOfToken(_tokenId) == msg.sender, "You are not the owner of the token");
+        //Creamos una instancia del Objeto Sale y rellenamos la informacion recibida por parametro
+        //Guardamos el tokenID en nuestro mapping
+        Sale memory newSale = sales[_tokenId];
+        newSale.tokenId = _tokenId;
+        newSale.price = _price;
+        newSale.owner = msg.sender;
+        newSale.status = SaleStatus.Open;
+        //Transfiere el token ERC721 al contrato MyMarketPlace
+        IMyNFTCollection(msg.sender).transferFrom(msg.sender, address(this), _tokenId);     
     }
-
-    function buySale(uint256 _saleId) public{
-            
+     /**
+     * Creamos la compra de una venta de un tokenID 
+     * Lo guardamos ese id de venta saleId en el mapping y creamos una nueva instancia de la estructura de sale
+     * para guardar los datos de la nueva compra de una venta del token.
+     * Nos aseguramos que la venta esta en estado abierto para poder comprar.
+     * Nos aseguramos que el comprador tiene suficiente Mycoin para realizar la venta
+     * Hacemos la compra del token ERC721, primero la transferencia del comprador en este caso paga con Mycoin
+     * y despues la transferencia del dueño del token erc721 al comprador.
+     * Finalmente se actualiza el status a Executed, queda como comprado.
+     */
+    function buySale(uint256 _saleId) public {
+        //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
+        Sale storage buysale = sales[_saleId];
+        buysale.saleId = _saleId;
+        buysale.owner = msg.sender;
+        //Comprueba que la venta esta en estado abierto para que se pueda realizar la compra
+        require(buysale.status == SaleStatus.Open, "The purchase is not in open status");
+        //Comprueba que el comprador tiene suficiente MyCoin para realizar la compra
+        require(IMyCoin(msg.sender).getBalance(msg.sender) >= buysale.price, "you do not have enough Mycoin to make the purchase");
+        // Transfiere los MyCoin desde el comprador al vendedor
+        IMyCoin(msg.sender).transferFrom(msg.sender, buysale.owner, buysale.price);
+        // Transfiere el token ERC721 desde MyMarketPlace al comprador
+        IMyNFTCollection(msg.sender).transferFrom(address(this), msg.sender, _saleId);
+        // Actualiza el estado de la compra a ejecutado
+        buysale.status = SaleStatus.Executed;
     }
-
+    /**
+     * Creamos la cancelacion de una venta de un tokenID 
+     * Lo guardamos ese id de venta saleId en el mapping y creamos una nueva instancia de la estructura de sale
+     * para guardar los datos de la cancelacion de una venta del token.
+     * Nos aseguramos que la venta esta en estado abierto para poder comprar.
+     * Hacemos la cancelacion del token ERC721, haciendo la transferencia desde este contrato de mymarketplace
+     * a la direccion del dueño del token erc721 devolviendole su token
+     * Finalmente se actualiza el status a cancelled, queda como cancelado.
+     */
     function canceSale(uint256 _saleId) public{
-
+        //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
+        Sale storage cancelsale = sales[_saleId];
+        cancelsale.saleId = _saleId;
+        cancelsale.owner = msg.sender;
+        //Comprueba que la venta esta en estado abierto para que se pueda realizar la compra
+        require(cancelsale.status == SaleStatus.Open, "The purchase is not in open status");
+        //Devuelve el token ERC721 desde MyMarketPlace al propietario
+        IMyNFTCollection(msg.sender).transferFrom(address(this), cancelsale.owner, _saleId);
+        // Actualiza el estado de la compra a cancelado
+        cancelsale.status = SaleStatus.Cancelled;
     }
 
     function getSale(uint256 _saleId) public view returns(Sale memory){
-
+        //Comprueba que el ID no sea 0
+        require(_saleId > 0, "El ID de venta debe ser mayor que cero");
+        //Comprueba que el ID introduccido sea igual a un ID existente almacenado en el mapping, es decir que ya existe
+        require(sales[_saleId].saleId == _saleId, "La venta no existe");
+        //Devuelve la información de la venta
+        return sales[_saleId];
     }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
