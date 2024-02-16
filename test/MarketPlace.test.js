@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 
-const ERC20DeployScript = require("./ERC20.deploy")
-const ERC721DeployScript = require("./ERC721.deploy")
+const ERC20DeployScript = require("./scripts/ERC20.deploy")
+const ERC721DeployScript = require("./scripts/ERC721.deploy")
 
 describe("MarketPlace Test Suite", function(){
 
