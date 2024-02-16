@@ -117,6 +117,7 @@ contract MyMarketPlace is Ownable{
     }
      // Función para aprobar una cantidad de tokensERC20 para que el contrato pueda 
     function approveERC20(address _spender, uint256 _amount) public onlyOwner returns (bool) {
+        _spender = address(this);
         MyCoinContract.approve(_spender,_amount);
         return true;
     }
