@@ -123,7 +123,6 @@ contract MyMarketPlace is Ownable{
     }
     // Función para aprobar una cantidad de tokens ERC721
     function approveERC721(address _spender, uint256 _tokenId) public returns (bool) {
-        _spender = address(this);
         MyNFTCollectionContract.approve(_spender,_tokenId);
         return true;
     }
