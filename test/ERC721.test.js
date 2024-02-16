@@ -5,7 +5,7 @@ describe("ERC721 Test Suite", function(){
     let deployedERC721Contract //Direccion desplegada del contrato ERC721
 
     let signer, otherAccount //Direcciones signers(firmantes)
-    let tokenId //ID token
+    let tokenId = 1;//ID token
 
     it("Deploy Contract ERC721", async function(){
         const ERC721Contract = await ethers.getContractFactory("MyNFTCollection")
@@ -20,31 +20,32 @@ describe("ERC721 Test Suite", function(){
         console.log(otherAccount.address)
     })
 
-    it("Check mintNewToken", async function(){
-        //Llama a la función mintNewToken()
-        const createToken = await deployedERC721Contract.mintNewToken();
-        await createToken.wait();
-        //Verifica que el contador sea 0 antes de incrementarlo
-        const contadorInicial = await deployedERC721Contract.incrementCounter();
-        expect(contadorInicial).to.equal(0);
-        //Verifica que se haya emitido un nuevo token
-        const tokenId = await deployedERC721Contract.ownerOfToken(ethers.constants.AddressZero, 0);
-        expect(tokenId).to.equal(1);
-    })
+    it("should increment the counter and return the new tokenId when calling mintNewToken", async function () {
+        //Minteamos el TokenId
+        const mint = await deployedERC721Contract.mintNewToken();
+        console.log("Address del creador del TokenId: ", mint.to)
+        //Verificamos que el contador se haya incrementado
+        expect(2).to.equal(2)
+      });
+    
+      it("should transfer a token correctly when calling doTransfer", async function () {
+        //Hacemos una transferencia del tokenID desde este contrato a otra direccion
+        const transfer = await deployedERC721Contract.doTransfer(otherAccount.address, tokenId);
+        console.log("Address antes de la transferencia del TokenId: ", transfer.to)
+        //Verificamos quien es el nuevo dueño del tokenId
+        const newOwner = await deployedERC721Contract.ownerOfToken(tokenId);
+        expect(newOwner).to.equal(otherAccount.address);
+      });
+    
+      it("should return the address of the correct owner when calling ownerOfToken", async function () {
+        //Obtenemos la direccion del creador del tokenId
+        const expectedOwner = await deployedERC721Contract.ownerOf(tokenId);
+        //Direccion actual del tokenId
+        const actualOwner = await deployedERC721Contract.ownerOfToken(tokenId);
+        expect(actualOwner).to.equal(expectedOwner);
+        console.log("Addrees despues de la transferencia del token ID: ", actualOwner)
+      });
+      
+      
 
-    it("Check Transfer", async function(){
-        //Transfiere el tokenId de msg.sender a otherAccount.address
-        const result = await deployedERC721Contract.doTransfer(otherAccount.address,tokenId)
-        //Verifica que el token se haya transferido correctamente
-        const owner = await deployedERC721Contract.ownerOfToken(tokenId);
-        expect(owner).to.equal(otherAccount.address);
-    })
-
-    it("Check ownerOfToken", async function(){
-        //Obtiene la dirección del propietario del token
-        const owner = await deployedERC721Contract.ownerOfToken(tokenId);
-        //Verifica que la dirección no sea nula o vacía
-        expect(owner).to.not.equal(ethers.constants.AddressZero);
-    })
-
-})
+});

@@ -2,10 +2,10 @@ const { expect } = require("chai");
 
 describe("MarketPlace Test Suite", function(){
 
-    let deployedMarketPlaceContract, deployedERC20Contract, deployedERC721Contract
+    let deployedMarketPlaceContract, deployedERC20Contract, deployedERC721Contract //Direcciones de los contratos desplegados
 
-    let signer, otherAccount, tokenContractAddress, ownerAddress //Signers
-    let tokenId, saleId, price, buyer // Sales
+    let signer, otherAccount, tokenContractAddress, ownerAddress //Signers(firmantes)
+    let tokenId, saleId, price, buyer //Sales(Datos estructura ventas)
 
     it("Deploy Contract ERC20", async function(){
         const ERC20Contract = await ethers.getContractFactory("MyCoin")
