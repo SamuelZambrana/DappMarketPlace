@@ -147,7 +147,8 @@ contract MyMarketPlace is Ownable{
         newSale.owner = msg.sender;
         newSale.status = SaleStatus.Open;
         //Transfiere el token ERC721 al contrato MyMarketPlace
-        IMyNFTCollection(msg.sender).transferFrom(msg.sender, address(this), _tokenId);     
+        IMyNFTCollection(msg.sender).transferFrom(msg.sender, address(this), _tokenId);
+        incrementCounter();    
     }
      /**
      * Creamos la compra de una venta de un tokenID 
