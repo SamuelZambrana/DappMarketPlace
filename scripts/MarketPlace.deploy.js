@@ -10,8 +10,8 @@ async function deploy(){
     console.log("MarketPlace deployment has just started...")
     const marketPlaceContract = await ethers.getContractFactory("MyMarketPlace")
     // Despliega los contratos ERC20 y ERC721
-    const erc20Contract = await ERC20DeployScript.deploy()
-    const erc721Contract = await ERC721DeployScript.deploy()
+    //const erc20Contract = await ERC20DeployScript.deploy()
+    //const erc721Contract = await ERC721DeployScript.deploy()
     //Obtenemos las direcciones de ambos contratos para el despliegue el marketPlace
     let ERC20ContractAddress = await ERC20DeployScript.getContractAddress()
     let ERC721ContractAddress = await ERC721DeployScript.getContractAddress()
