@@ -13,7 +13,7 @@ async function deploy(){
     const erc20Contract = await ERC20DeployScript.deploy()
     const erc721Contract = await ERC721DeployScript.deploy()
     // Pasa las direcciones de los contratos como parámetros al contrato de MarketPlace
-    deployedMarketPlaceContract = await marketPlaceContract.deploy(erc20Contract.address, erc721Contract.address)
+    deployedMarketPlaceContract = await marketPlaceContract.deploy(erc20Contract, erc721Contract)
     await deployedMarketPlaceContract.waitForDeployment()
     contractAddress = deployedMarketPlaceContract.target
     console.log("...MarketPlace constract has been deployed to: " + contractAddress)
