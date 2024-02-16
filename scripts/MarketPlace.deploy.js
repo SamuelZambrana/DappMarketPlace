@@ -11,7 +11,6 @@ async function deploy(){
     const marketPlaceContract = await ethers.getContractFactory("MyMarketPlace")
     await ERC20DeployScript.deployedERC20Contract
     await ERC721DeployScript.deployedERC721Contract
-    ERC721DeployScript = await deployedERC721Contract
     deployedMarketPlaceContract = await marketPlaceContract.deploy(ERC20DeployScript.contractAddress, ERC721DeployScript.contractAddress)
     await deployedMarketPlaceContract.waitForDeployment()
     contractAddress = deployedMarketPlaceContract.target
