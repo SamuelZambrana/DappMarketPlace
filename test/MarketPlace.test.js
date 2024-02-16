@@ -15,8 +15,8 @@ describe("MarketPlace Test Suite", function(){
     })
 
     it("Deploy Contract ERC721", async function(){
-        const ERC71Contract = await ethers.getContractFactory("MyNFTCollection")
-        deployedERC721Contract = await ERC71Contract.deploy("NFTCollection","CoNFT")
+        const ERC721Contract = await ethers.getContractFactory("MyNFTCollection")
+        deployedERC721Contract = await ERC721Contract.deploy("NFTCollection","CoNFT")
         await deployedERC721Contract.waitForDeployment()
         //console.log(deployedERC721Contract.target)
     })

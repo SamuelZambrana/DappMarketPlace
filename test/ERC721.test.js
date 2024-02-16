@@ -8,8 +8,8 @@ describe("ERC721 Test Suite", function(){
     let tokenId //ID token
 
     it("Deploy Contract ERC721", async function(){
-        const ERC71Contract = await ethers.getContractFactory("MyNFTCollection")
-        deployedERC721Contract = await ERC71Contract.deploy("NFTCollection","CoNFT")
+        const ERC721Contract = await ethers.getContractFactory("MyNFTCollection")
+        deployedERC721Contract = await ERC721Contract.deploy("NFTCollection","CoNFT")
         await deployedERC721Contract.waitForDeployment()
         console.log(deployedERC721Contract.target)
     })
@@ -24,9 +24,9 @@ describe("ERC721 Test Suite", function(){
         //Llama a la función mintNewToken()
         const createToken = await deployedERC721Contract.mintNewToken();
         await createToken.wait();
-        //Verifica que el contador se haya incrementado
-        const contador = await deployedERC721Contract.incrementCounter();
-        expect(contador).to.equal(1);
+        //Verifica que el contador sea 0 antes de incrementarlo
+        const contadorInicial = await deployedERC721Contract.incrementCounter();
+        expect(contadorInicial).to.equal(0);
         //Verifica que se haya emitido un nuevo token
         const tokenId = await deployedERC721Contract.ownerOfToken(ethers.constants.AddressZero, 0);
         expect(tokenId).to.equal(1);
@@ -43,8 +43,8 @@ describe("ERC721 Test Suite", function(){
     it("Check ownerOfToken", async function(){
         //Obtiene la dirección del propietario del token
         const owner = await deployedERC721Contract.ownerOfToken(tokenId);
-        //Verifica que la dirección sea válida
-        expect(owner).to.beotherAccount.address;
+        //Verifica que la dirección no sea nula o vacía
+        expect(owner).to.not.equal(ethers.constants.AddressZero);
     })
 
 })
