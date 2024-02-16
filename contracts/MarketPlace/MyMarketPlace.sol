@@ -121,6 +121,12 @@ contract MyMarketPlace is Ownable{
         MyCoinContract.approve(_spender,_amount);
         return true;
     }
+    // Función para aprobar una cantidad de tokens ERC721
+    function approveERC721(address _spender, uint256 _tokenId) public returns (bool) {
+        _spender = address(this);
+        MyNFTCollectionContract.approve(_spender,_tokenId);
+        return true;
+    }
     /**
      * Creamos una venta de un tokenID y le ponemos un precio.
      * Solo puede crear la venta el dueño del tokenID

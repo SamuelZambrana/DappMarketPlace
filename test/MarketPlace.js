@@ -28,8 +28,9 @@ describe("MarketPlace Test Suite", function(){
         await deployedMarketPlaceContract.waitForDeployment()
         //console.log(deployedMarketPlaceContract.target)
         //Llama al método "approve" en el contrato desplegado para autorizar la direccion
-        //tokenContractAddress que pueda hacer transferencias.
+        //del contrato de marketplace que pueda hacer transferencias.
         await deployedMarketPlaceContract.approveERC20(deployedMarketPlaceContract.target, 5000);
+        await deployedMarketPlaceContract.approveERC721(deployedMarketPlaceContract.target, tokenId);
         //Verifica que la aprobación se haya realizado correctamente
         /*const approvalStatus = await deployedMarketPlaceContract.allowance(
         ownerAddress,
