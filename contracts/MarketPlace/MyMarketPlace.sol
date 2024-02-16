@@ -115,6 +115,11 @@ contract MyMarketPlace is Ownable{
         saleIdCounter++;
         return saleIdCounter;
     }
+     // Función para aprobar una cantidad de tokensERC20 para que el contrato pueda 
+    function approveERC20(address _spender, uint256 _amount) public onlyOwner returns (bool) {
+        MyCoinContract.approve(_spender,_amount);
+        return true;
+    }
     /**
      * Creamos una venta de un tokenID y le ponemos un precio.
      * Solo puede crear la venta el dueño del tokenID
