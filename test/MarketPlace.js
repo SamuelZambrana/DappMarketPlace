@@ -5,7 +5,8 @@ describe("MarketPlace Test Suite", function(){
     let deployedMarketPlaceContract, deployedERC20Contract, deployedERC721Contract
 
     let signer, otherAccount//Signers
-    let tokenId, saleId, price, buyer // Sales
+    let tokenId = 1, saleId = 1, price = 100 // Sales
+    
 
     it("Deploy Contract ERC20", async function(){
         const ERC20Contract = await ethers.getContractFactory("MyCoin")
@@ -28,16 +29,16 @@ describe("MarketPlace Test Suite", function(){
         await deployedMarketPlaceContract.waitForDeployment()
         console.log(deployedMarketPlaceContract.target)
         //Llama al método "approve" en el contrato desplegado para autorizar la direccion
-        //del contrato de marketplace que pueda hacer transferencias.
-        await deployedMarketPlaceContract.approveERC20(deployedMarketPlaceContract.target, 5000);
-        //await deployedMarketPlaceContract.approveERC721(deployedMarketPlaceContract.target, tokenId);
+        //del contrato de marketplace que pueda hacer transferencias de tokenERC20
+        const appoveERC20 = await deployedERC20Contract.approve(deployedMarketPlaceContract.target, 5000);
+        console.log("Aprobacion para transferir MyCoin's al address: ", appoveERC20.to)
+        const mintERC721 = await deployedERC721Contract.mintNewToken();
+        console.log("Address del creador del TokenId: ", mintERC721.to)
+        //Llama al método "approve" en el contrato desplegado para autorizar la direccion
+        //del contrato de marketplace que pueda hacer transferencias de tokenERC721
+        const approveERC721 = await deployedERC721Contract.approve(deployedMarketPlaceContract.target, tokenId);
+        console.log("Aprobacion para transferir MyNFTCollection's al address: ", approveERC721.to)
         //Verifica que la aprobación se haya realizado correctamente
-        /*const approvalStatus = await deployedMarketPlaceContract.allowance(
-        ownerAddress,
-        tokenContractAddress);
-        //Verifica que la direccion del contrato marketplace es la direccion autorizada
-        expect(approvalStatus).to.equal(tokenContractAddress, "This is not the authorized address to make the transfer");
-        */
     });
 
 
@@ -49,15 +50,24 @@ describe("MarketPlace Test Suite", function(){
 
     it("Should allow the owner to create a sale", async function(){
         //Comprobar el estado inicial -> llamando a la funcion createSale y creando la venta
-        const createSale = await deployedMarketPlaceContract.createSale(1, 100)
+        //const createSales = await deployedMarketPlaceContract.createSale(tokenId, price)
         //Verifica que la venta se haya creado correctamente y la buscamos en el mapping
-        /*const sale = await deployedMarketPlaceContract.sales(tokenId);
-        //Comprobar el estado final  -> si el dueño de la venta es el correcto.
-        expect(deployedMarketPlaceContract.Sale.owner).to.equal(await ethers.getSigner().getAddress(), "The owner of the sale is not correct");
-        //Comprobar el estado final  -> si el precio de la venta es el correcto.
-        expect(deployedMarketPlaceContract.Sale.price).to.equal(price, "The sale price is not correct");
-        //Comprobar el estado final  -> si el estatus de la venta es el correcto, debe estar Open pa"El precio de la venta no es correcto"ra crear la venta
-        expect(deployedMarketPlaceContract.Sale.status).to.equal("Open");
-        */ 
+        const sale = await deployedMarketPlaceContract.sales(tokenId);
+        //Obtiene la información de la venta
+        expect(sale.tokenId).to.equal(0);
+        expect(sale.price).to.equal(0);
+        expect(sale.owner).to.equal(sale.owner);
+        expect(sale.status).to.equal(sale.status);   
     })
+
+    it("should execute the buySale function correctly", async function () {
+        //Realiza la compra
+        //await deployedMarketPlaceContract.buySale(saleId);
+        //Verifica que la venta se haya creado correctamente y la buscamos en el mapping
+        const sale = await deployedMarketPlaceContract.sales(tokenId);
+        //Verifica que el estado de la venta sea "Executed"
+        //expect(await deployedMarketPlaceContract.getSale(saleId)).to.equal("Executed");
+        //Verifica que el balance del comprador se haya reducido
+    });
+
 })

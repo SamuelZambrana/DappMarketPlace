@@ -115,19 +115,6 @@ contract MyMarketPlace is Ownable{
         saleIdCounter++;
         return saleIdCounter;
     }
-     // Función para aprobar una cantidad de tokensERC20 para que el contrato pueda 
-    function approveERC20(address _spender, uint256 _amount) public onlyOwner returns (bool) {
-        _spender = address(this);
-        require(_spender != address(0), "La direccion del gastador no puede ser cero.");
-        require(MyCoinContract.approve(_spender, _amount), "Error al aprobar los tokens ERC20.");
-        return true;
-    }
-    // Función para aprobar una cantidad de tokens ERC721
-    function approveERC721(address _to, uint256 _tokenId) public onlyOwner() returns (bool) {
-        require(_to != address(0), "La direccion del gastador no puede ser cero.");
-        MyNFTCollectionContract.approve(_to, _tokenId);
-        return true;
-    }
     /**
      * Creamos una venta de un tokenID y le ponemos un precio.
      * Solo puede crear la venta el dueño del tokenID
