@@ -56,14 +56,14 @@ describe("MarketPlace Test Suite", function(){
 
     it("Should allow the owner to create a sale", async function(){
         //Comprobar el estado inicial -> llamando a la funcion createSale y creando la venta
-        //const createSales = await deployedMarketPlaceContract.createSale(tokenId, price)
+        const createSales = await deployedMarketPlaceContract.createSale(tokenId, price)
         //Verifica que la venta se haya creado correctamente y la buscamos en el mapping
         const sale = await deployedMarketPlaceContract.sales(tokenId);
         //Obtiene la información de la venta
-        expect(sale.tokenId).to.equal(0);
-        expect(sale.price).to.equal(0);
-        expect(sale.owner).to.equal(sale.owner);
-        expect(sale.status).to.equal(sale.status);   
+        expect(sale.tokenId).to.equal(1);
+        expect(sale.price).to.equal(100);
+        expect(sale.owner).to.equal(signer.address);
+        expect(sale.status).to.equal(0);   
     })
 
     it("should execute the buySale function correctly", async function () {

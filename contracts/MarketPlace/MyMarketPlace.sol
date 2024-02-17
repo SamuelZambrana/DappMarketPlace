@@ -56,6 +56,8 @@ contract MyMarketPlace is Ownable{
 
     //Relaciona el id de la venta con el objeto Sale que contiene la informacion
     mapping(uint256 => Sale) public sales;
+    //Mapeo de token ID a su propietario
+    mapping(uint256 => address) public tokenOwners;
 
 
 
@@ -123,19 +125,22 @@ contract MyMarketPlace is Ownable{
      * Hacemos la transferencia del tokenID desde la direccion del dueño del token a la direcion de este 
      * contrato MyMarketPlace
      */
-   function createSale(uint256 _tokenId, uint256 _price) public onlyOwner(){
+   function createSale(uint256 _tokenId, uint256 _price) public {
         //Comprueba que el llamante sea el dueño del token
-        require(IMyNFTCollection(msg.sender).ownerOfToken(_tokenId) == msg.sender, "You are not the owner of the token");
-        //Creamos una instancia del Objeto Sale y rellenamos la informacion recibida por parametro
-        //Guardamos el tokenID en nuestro mapping
-        Sale memory newSale = sales[_tokenId];
-        newSale.tokenId = _tokenId;
-        newSale.price = _price;
-        newSale.owner = msg.sender;
-        newSale.status = SaleStatus.Open;
+        require(MyNFTCollectionContract.ownerOfToken(_tokenId) == msg.sender, "You are not the owner of the token");
+        //Creamos una instancia para crear una nueva estructura y rellenamos la informacion recibida por parametro
+        Sale memory newSale = Sale({
+            tokenId: _tokenId,
+            price: _price,
+            owner: msg.sender,
+            status:  SaleStatus.Open,
+            saleId: incrementCounter()
+        });
+        //Guardamos el tokenID en nuestro mapping con los datos de la nueva estructura
+        sales[_tokenId] = newSale;
         //Transfiere el token ERC721 al contrato MyMarketPlace
-        IMyNFTCollection(msg.sender).transferFrom(msg.sender, address(this), _tokenId);
-        incrementCounter();    
+        MyNFTCollectionContract.transferFrom(msg.sender, address(this), _tokenId);
+
     }
      /**
      * Creamos la compra de una venta de un tokenID 
@@ -150,16 +155,14 @@ contract MyMarketPlace is Ownable{
     function buySale(uint256 _saleId) public {
         //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
         Sale storage buysale = sales[_saleId];
-        buysale.saleId = _saleId;
-        buysale.owner = msg.sender;
         //Comprueba que la venta esta en estado abierto para que se pueda realizar la compra
         require(buysale.status == SaleStatus.Open, "The purchase is not in open status");
         //Comprueba que el comprador tiene suficiente MyCoin para realizar la compra
-        require(IMyCoin(msg.sender).getBalance(msg.sender) >= buysale.price, "you do not have enough Mycoin to make the purchase");
-        // Transfiere los MyCoin desde el comprador al vendedor
-        IMyCoin(msg.sender).transferFrom(msg.sender, buysale.owner, buysale.price);
+        require(MyCoinContract.getBalance(msg.sender) >= buysale.price, "you do not have enough Mycoin to make the purchase");
+        //Transfiere los MyCoin desde el comprador al vendedor
+        MyCoinContract.transferFrom(msg.sender, address(this), buysale.price);
         // Transfiere el token ERC721 desde MyMarketPlace al comprador
-        IMyNFTCollection(msg.sender).transferFrom(address(this), msg.sender, _saleId);
+        MyNFTCollectionContract.transferFrom(address(this), msg.sender, _saleId);
         // Actualiza el estado de la compra a ejecutado
         buysale.status = SaleStatus.Executed;
     }
@@ -175,12 +178,10 @@ contract MyMarketPlace is Ownable{
     function canceSale(uint256 _saleId) public{
         //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
         Sale storage cancelsale = sales[_saleId];
-        cancelsale.saleId = _saleId;
-        cancelsale.owner = msg.sender;
         //Comprueba que la venta esta en estado abierto para que se pueda realizar la compra
         require(cancelsale.status == SaleStatus.Open, "The purchase is not in open status");
         //Devuelve el token ERC721 desde MyMarketPlace al propietario
-        IMyNFTCollection(msg.sender).transferFrom(address(this), cancelsale.owner, _saleId);
+        MyNFTCollectionContract.transferFrom(address(this), msg.sender, _saleId);
         // Actualiza el estado de la compra a cancelado
         cancelsale.status = SaleStatus.Cancelled;
     }
