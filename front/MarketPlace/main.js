@@ -113,7 +113,6 @@ const MyNFTCollectionApprove = async () => {
 const mintTokenId = document.getElementById("mintTokenId")
 mintTokenId.addEventListener("click", async () => {
     await mintNewTokenMyNFTCollection()
-    await MyNFTCollectionApprove()
 })
 
 //Contrato MyMarketplace
@@ -129,7 +128,7 @@ const createSaleMyMarketPlace = async () => {
     //Creamos la venta
     const sale = await contractWrite.createSale(1, 10)
     //Formateamos para ver su valor por el BigNumber
-    const amount = ethers.utils.parseUnits(sale)
+    const amount = ethers.utils.parseUnits("10", 10)
     //Mostramos por consola el resultado
     await sale.wait()
     console.log(sale)
@@ -139,7 +138,8 @@ const createSaleMyMarketPlace = async () => {
 //Relacionar la funcion anterior con el ID del boton del index.html y crear un event Listener
 const createSale = document.getElementById("createSale")
 createSale.addEventListener("click", async () => {
-    await createSaleMyMarketPlace()
+    await MyNFTCollectionApprove()
+    await createSaleMyMarketPlace()    
 })
 
 const buySaleMyMarketPlace = async () => {
@@ -182,7 +182,7 @@ canceSale.addEventListener("click", async () => {
 
 const getSaleMyMarketPlace = async () => {
     //Creamos una nueva instancia del contrato para poder iteractuar con sus funcionalidades
-    contractRead = new ethers.Contract(contractAddressMarketPlace,ContractABIFormattedMarketPlace,provider)
+    contractRead = new ethers.Contract(contractAddressMarketPlace,ContractABIFormattedMarketPlace,signer)
     //Verificamos la venta
     const balance = await contractRead.getSale(1)
     console.log(balance)
