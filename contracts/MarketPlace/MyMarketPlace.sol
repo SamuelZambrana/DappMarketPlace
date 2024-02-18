@@ -7,11 +7,15 @@ import {IMyCoin} from "../ERC20/IMyCoin.sol";
 import {IMyNFTCollection} from "../ERC721/IMyNFTCollection.sol";
 
 /**
- * @title 
- * @author 
+ * @title Mercado para el intercambio de tokens
+ * @author Samuel Zambrana Gonzalez
+ * @notice Contrato reliacionado a la compra, venta y transferencia de tokens
+ * donde podemos ver todo relacionado con una venta , desde crearla hasta ver 
+ * comprarla ,cancelarla o ver si existe. Iteractuamos con los contratos MyCoin 
+ * que sera la moneda de pago y el contrato MyNFTCollection que sera el tokenId
+ * que sera expuesto en la venta.
  * @notice 
- * @notice 
- * @dev 
+ * @dev Cada funcion esta explicada en la parte superior, David @perdiweb3
  */
 contract MyMarketPlace is Ownable{
 
@@ -57,7 +61,7 @@ contract MyMarketPlace is Ownable{
     //Relaciona el id de la venta con el objeto Sale que contiene la informacion
     mapping(uint256 => Sale) public sales;
     //Mapeo de token ID a su propietario
-    mapping(uint256 => address) public tokenOwners;
+    
 
 
 
