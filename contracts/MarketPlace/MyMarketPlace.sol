@@ -60,10 +60,7 @@ contract MyMarketPlace is Ownable{
 
     //Relaciona el id de la venta con el objeto Sale que contiene la informacion
     mapping(uint256 => Sale) public sales;
-    //Mapeo de token ID a su propietario
     
-
-
 
     /**
      * -----------------------------------------------------------------------------------------------------
@@ -113,21 +110,30 @@ contract MyMarketPlace is Ownable{
      */
 
     /**
-     * Incrementa el valor del contador de id de ventas.
+     * @notice Incrementa el valor del contador de id de ventas.
      * Es necesario llamarlo justo antes de crear una venta nueva para obtener el id de la venta.
-     * Tomad como ejemplo de uso MyNFTCollection.
+     * @notice
+     * @dev Tomad como ejemplo de uso MyNFTCollection.
+     * @return Retorna la variable saleIdCounter incrementada
      */
     function incrementCounter() internal returns(uint256){
         saleIdCounter++;
         return saleIdCounter;
     }
     /**
-     * Creamos una venta de un tokenID y le ponemos un precio.
+     * @notice Creamos una venta de un tokenID y le ponemos un precio.
      * Solo puede crear la venta el dueño del tokenID
      * Lo guardamos ese tokenID en el mapping y creamos una nueva instancia de la estructura de sale
      * para guardar los datos de la nueva venta
      * Hacemos la transferencia del tokenID desde la direccion del dueño del token a la direcion de este 
      * contrato MyMarketPlace
+     * @notice
+     * @param _tokenId  hace referencia a un elemento de la estructura Sale que despues
+     * se guarda en el mapping y poniendo su ID accedemos a toda la estructura para buscar
+     * la informacion de la creacion de la venta relacionada a ese TokenId
+     * @param _price  hace referemcia al precio que se le pone al tokenID cuando se
+     * crea la venta y se alamcena en la estructura guardad en el mapping
+     * @dev Al crear ña vemta se incrementa el ID de la venta, David @perdiweb3
      */
    function createSale(uint256 _tokenId, uint256 _price) public {
         //Comprueba que el llamante sea el dueño del token
@@ -147,7 +153,7 @@ contract MyMarketPlace is Ownable{
 
     }
      /**
-     * Creamos la compra de una venta de un tokenID 
+     * @notice Creamos la compra de una venta de un tokenID 
      * Lo guardamos ese id de venta saleId en el mapping y creamos una nueva instancia de la estructura de sale
      * para guardar los datos de la nueva compra de una venta del token.
      * Nos aseguramos que la venta esta en estado abierto para poder comprar.
@@ -155,6 +161,9 @@ contract MyMarketPlace is Ownable{
      * Hacemos la compra del token ERC721, primero la transferencia del comprador en este caso paga con Mycoin
      * y despues la transferencia del dueño del token erc721 al comprador.
      * Finalmente se actualiza el status a Executed, queda como comprado.
+     * @notice 
+     * @param _saleId Se introducce como parametro el ID de la venta creado por la funcioncreateSale
+     * @dev Al introduccir un ID no valido se revierte la operacion, David @perdiweb3
      */
     function buySale(uint256 _saleId) public {
         //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
@@ -171,13 +180,16 @@ contract MyMarketPlace is Ownable{
         buysale.status = SaleStatus.Executed;
     }
     /**
-     * Creamos la cancelacion de una venta de un tokenID 
+     * @notice Creamos la cancelacion de una venta de un tokenID 
      * Lo guardamos ese id de venta saleId en el mapping y creamos una nueva instancia de la estructura de sale
      * para guardar los datos de la cancelacion de una venta del token.
      * Nos aseguramos que la venta esta en estado abierto para poder comprar.
      * Hacemos la cancelacion del token ERC721, haciendo la transferencia desde este contrato de mymarketplace
      * a la direccion del dueño del token erc721 devolviendole su token
      * Finalmente se actualiza el status a cancelled, queda como cancelado.
+     * @notice
+     * @param _saleId Se introducce como parametro el ID de la venta creado por la funcioncreateSale
+     * @dev Al introduccir un ID no valido se revierte la operacion, David @perdiweb3
      */
     function canceSale(uint256 _saleId) public{
         //Creamos una instancia del Objeto Sale para guardar el _saleId en nuestro mapping sales.
@@ -189,7 +201,13 @@ contract MyMarketPlace is Ownable{
         // Actualiza el estado de la compra a cancelado
         cancelsale.status = SaleStatus.Cancelled;
     }
-
+     /**
+     * @notice Ontenemos la informacion de una venta de un tokenID 
+     * @notice
+     * @param _saleId Se introducce como parametro el ID de la venta creado por la funcioncreateSale
+     * @dev Al introduccir un ID no valido o 0 se revierte la operacion, David @perdiweb3
+     * @return Sale, Devuelve la  estructura de datos del ID de la venta que almacenamos en memoria
+     */
     function getSale(uint256 _saleId) public view returns(Sale memory){
         //Comprueba que el ID no sea 0
         require(_saleId > 0, "El ID de venta debe ser mayor que cero");
