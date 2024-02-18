@@ -62,6 +62,7 @@ const createSaleMyMarketPlace = async () => {
     await sale.wait()
     console.log(sale)
     alert("Creacion de la venta Realizada Correctamente")
+    
 }
 
 //Relacionar la funcion anterior con el ID del boton del index.html y crear un event Listener
