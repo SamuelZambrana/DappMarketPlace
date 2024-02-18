@@ -45,7 +45,7 @@ const getNetwork = async () => {
 // 2- Contract Address, porque una referencia de donde atacar en la blockchain
 // 3- Contract ABI (Application Binary Interface), porque necesitamos lo que puede hacer el contrato
 
-let contractAddress = "0xe745d1eDdB571C3FDd6a73477c7f08DB3Bf2dF23"
+let contractAddress = "0x9676B5e8834391151d2a2E05eFB208E5F07dfff1"
 
 import ContractABI from "../../artifacts/contracts/ERC20/MyCoin.sol/MyCoin.json" assert {type: "json"}
 const ContractInterface = new ethers.utils.Interface(ContractABI.abi)
