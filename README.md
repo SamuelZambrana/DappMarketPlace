@@ -19,15 +19,14 @@ Bienvenido a DappMarketPlace, una aplicación descentralizada (DApp) diseñada p
 # Cómo Ejecutar la DApp
 Si deseas probar DappMarketPlace en tu máquina local, sigue estos pasos:
 
-  1.Clona el Repositorio:
-  Descarga este repositorio en tu máquina local.
-  2.Requisitos Previos:
-  Asegúrate de tener Node.js y npm instalados en tu sistema.
-  3.Instala Dependencias:
-  Navega al directorio del proyecto y ejecuta el siguiente comando:
+  1.Clona el Repositorio: Descarga este repositorio en tu máquina local.
+  
+  2.Requisitos Previos: Asegúrate de tener Node.js y npm instalados en tu sistema.
+  
+  3.Instala Dependencias: Navega al directorio del proyecto y ejecuta el siguiente comando: 
   npm install
-  4.Configura tu Entorno de Desarrollo:
-  Configura una billetera Ethereum para conectarte a la red de prueba o principal.
+  
+  4.Configura tu Entorno de Desarrollo: Configura una billetera Ethereum para conectarte a la red de prueba o principal.
   Puedes utilizar MetaMask u otra billetera compatible.
 
   5.Inicia la DApp:
